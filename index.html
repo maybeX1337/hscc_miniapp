@@ -10,7 +10,6 @@
 <style>
 :root {
   --accent: #6B3FF0;
-  --accent-light: #8B5CF6;
   --accent-dim: rgba(107,63,240,0.12);
   --accent-dim2: rgba(107,63,240,0.06);
   --bg: #F4F3FF;
@@ -21,783 +20,208 @@
   --border: rgba(107,63,240,0.15);
   --success: #10B981;
   --warn: #F59E0B;
+  --danger: #EF4444;
   --radius: 18px;
   --radius-sm: 12px;
   --nav-h: 72px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: 'Onest', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-html, body {
-  height: 100%;
-  font-family: 'Onest', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow: hidden;
-}
+.screen { position: fixed; inset: 0; overflow-y: auto; padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px); opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity .22s, transform .22s; }
+.screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
 
-/* ── SCREENS ── */
-.screen {
-  position: fixed; inset: 0;
-  overflow-y: auto;
-  padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
-  opacity: 0; pointer-events: none;
-  transform: translateY(12px);
-  transition: opacity .22s ease, transform .22s ease;
-}
-.screen.active {
-  opacity: 1; pointer-events: all;
-  transform: translateY(0);
-}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(var(--nav-h) + var(--safe-bottom));
-  background: var(--card);
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: flex-start;
-  padding-top: 10px;
-  z-index: 100;
-  backdrop-filter: blur(20px);
-}
-.nav-item {
-  flex: 1;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
-  cursor: pointer;
-  color: var(--text-muted);
-  transition: color .15s;
-  padding: 4px 0;
-}
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: calc(var(--nav-h) + var(--safe-bottom)); background: var(--card); border-top: 1px solid var(--border); display: flex; padding-top: 10px; z-index: 100; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); transition: color .15s; padding: 4px 0; }
 .nav-item.active { color: var(--accent); }
-.nav-icon {
-  width: 26px; height: 26px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
 .nav-icon svg { width: 22px; height: 22px; transition: transform .2s; }
 .nav-item.active .nav-icon svg { transform: scale(1.15); }
-.nav-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2px; }
+.nav-label { font-size: 10px; font-weight: 500; }
 
-/* Center scan button */
-.nav-center {
-  flex: 1;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 4px;
-  cursor: pointer;
-  color: var(--text-muted);
-  padding: 4px 0;
-  margin-top: -22px;
-}
-.nav-center-btn {
-  width: 52px; height: 52px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 20px rgba(107,63,240,0.4);
-  transition: transform .15s, box-shadow .15s;
-}
-.nav-center-btn:active { transform: scale(0.93); box-shadow: 0 2px 10px rgba(107,63,240,0.3); }
-.nav-center-btn svg { width: 24px; height: 24px; color: white; }
-.nav-center .nav-label { font-size: 10px; font-weight: 500; }
-
-/* ── COMMON ELEMENTS ── */
-.section-header {
-  padding: 20px 20px 10px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.section-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 18px; font-weight: 700;
-  color: var(--text);
-}
-.section-link {
-  font-size: 13px; color: var(--accent); font-weight: 500;
-  cursor: pointer;
-}
-
-.badge {
-  display: inline-flex; align-items: center;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.3px;
-}
+.badge { display: inline-flex; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .badge-type { background: var(--accent-dim); color: var(--accent); }
 .badge-soon { background: rgba(245,158,11,0.12); color: var(--warn); }
 .badge-done { background: rgba(16,185,129,0.1); color: var(--success); }
 .badge-registered { background: rgba(16,185,129,0.12); color: var(--success); }
 
-.btn {
-  width: 100%; padding: 16px;
-  border: none; border-radius: var(--radius-sm);
-  font-family: 'Onest', sans-serif;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer;
-  transition: transform .12s, opacity .12s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
+.btn { width: 100%; padding: 16px; border: none; border-radius: var(--radius-sm); font-family: 'Onest', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform .12s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-primary { background: var(--accent); color: white; }
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--accent);
-  color: var(--accent);
-}
 .btn-ghost { background: var(--accent-dim); color: var(--accent); }
 
-.card {
-  background: var(--card);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(107,63,240,0.06);
-}
-
-/* ── EVENTS SCREEN ── */
-#screen-events {
-  background: var(--bg);
-}
-
-.events-header {
-  padding: 16px 20px 8px;
-  background: var(--bg);
-  position: sticky; top: 0; z-index: 10;
-}
-.events-logo {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 15px; font-weight: 900;
-  color: var(--accent);
-  letter-spacing: -0.5px;
-  margin-bottom: 14px;
-}
+.events-header { padding: 16px 20px 8px; background: var(--bg); position: sticky; top: 0; z-index: 10; }
+.events-logo { font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 900; color: var(--accent); margin-bottom: 14px; }
 .events-logo span { color: var(--text); }
 
-.search-bar {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 50px;
-  padding: 10px 16px;
-}
-.search-bar input {
-  flex: 1; border: none; background: transparent;
-  font-family: 'Onest', sans-serif;
-  font-size: 14px; color: var(--text);
-  outline: none;
-}
-.search-bar input::placeholder { color: var(--text-muted); }
-.search-bar svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+.search-bar { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 50px; padding: 10px 16px; }
+.search-bar input { flex: 1; border: none; background: transparent; font-size: 14px; outline: none; font-family: 'Onest', sans-serif; }
+.search-bar svg { width: 16px; height: 16px; color: var(--text-muted); }
 
-.tabs {
-  display: flex; gap: 8px;
-  padding: 12px 20px 4px;
-}
-.tab {
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  border: none;
-  font-family: 'Onest', sans-serif;
-}
+.tabs { display: flex; gap: 8px; padding: 12px 20px 4px; }
+.tab { padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'Onest', sans-serif; }
 .tab.active { background: var(--accent); color: white; }
 .tab:not(.active) { background: var(--card); color: var(--text-sec); }
 
 .events-list { padding: 8px 20px 0; display: flex; flex-direction: column; gap: 16px; }
-
-.event-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform .15s;
-  box-shadow: 0 2px 16px rgba(107,63,240,0.07);
-}
+.event-card { background: var(--card); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: transform .15s; box-shadow: 0 2px 16px rgba(107,63,240,0.07); }
 .event-card:active { transform: scale(0.98); }
 
-.event-banner {
-  width: 100%; aspect-ratio: 16/7;
-  object-fit: cover;
-  display: block;
-  background: linear-gradient(135deg, #4C1D95 0%, #6B3FF0 50%, #A855F7 100%);
-  position: relative;
-  overflow: hidden;
-}
-.event-banner-placeholder {
-  width: 100%; aspect-ratio: 16/7;
-  display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: flex-end;
-  padding: 16px;
-  position: relative; overflow: hidden;
-}
-.event-banner-bg {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: flex-end;
-}
-.event-banner-text {
-  position: relative; z-index: 1;
-}
-.event-banner-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 16px; font-weight: 900;
-  color: white;
-  line-height: 1.1;
-  text-transform: uppercase;
-  letter-spacing: -0.5px;
-}
-.event-banner-sub {
-  font-size: 10px; font-weight: 500;
-  color: rgba(255,255,255,0.75);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+.event-banner-placeholder { width: 100%; aspect-ratio: 16/7; display: flex; flex-direction: column; justify-content: flex-end; padding: 16px; position: relative; overflow: hidden; }
+.event-banner-bg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end; }
+.event-banner-text { position: relative; z-index: 1; }
+.event-banner-title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 900; line-height: 1.1; text-transform: uppercase; }
+.event-banner-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.75); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
 .event-body { padding: 14px 16px 16px; }
-.event-title {
-  font-size: 15px; font-weight: 600;
-  color: var(--text); line-height: 1.35;
-  margin-bottom: 10px;
-}
-.event-meta {
-  display: flex; gap: 8px;
-  margin-bottom: 12px;
-}
-.event-meta-pill {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--accent-dim2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 12px; font-weight: 500;
-  color: var(--text-sec);
-  flex: 1;
-}
-.event-meta-pill svg { width: 13px; height: 13px; color: var(--accent); flex-shrink: 0; }
-
-.event-desc {
-  font-size: 13px; color: var(--text-sec);
-  line-height: 1.5; margin-bottom: 12px;
-}
+.event-title { font-size: 15px; font-weight: 600; line-height: 1.35; margin-bottom: 10px; }
+.event-meta { display: flex; gap: 8px; margin-bottom: 12px; }
+.event-meta-pill { display: flex; align-items: center; gap: 5px; background: var(--accent-dim2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--text-sec); flex: 1; }
+.event-meta-pill svg { width: 13px; height: 13px; color: var(--accent); }
+.event-desc { font-size: 13px; color: var(--text-sec); line-height: 1.5; margin-bottom: 12px; }
 .event-more { font-size: 13px; color: var(--accent); font-weight: 600; }
+.event-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--accent-dim2); border-top: 1px solid var(--border); }
+.event-count { font-size: 12px; color: var(--text-sec); }
+.event-register-btn { padding: 8px 18px; background: var(--accent); color: white; border: none; border-radius: 50px; font-family: 'Onest', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+.event-register-btn.registered { background: rgba(16,185,129,0.1); color: var(--success); }
 
-.event-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--accent-dim2);
-  border-top: 1px solid var(--border);
-}
-.event-count { font-size: 12px; color: var(--text-sec); font-weight: 500; }
-.event-register-btn {
-  padding: 8px 18px;
-  background: var(--accent);
-  color: white;
-  border: none; border-radius: 50px;
-  font-family: 'Onest', sans-serif;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  transition: opacity .15s;
-}
-.event-register-btn.registered {
-  background: rgba(16,185,129,0.1);
-  color: var(--success);
-}
-.event-register-btn:active { opacity: 0.8; }
-
-/* ── EVENT DETAIL ── */
-#screen-detail {
-  background: var(--bg);
-}
-.detail-back {
-  display: flex; align-items: center; gap: 6px;
-  padding: 16px 20px;
-  font-size: 14px; font-weight: 500;
-  color: var(--accent); cursor: pointer;
-}
+.detail-back { display: flex; align-items: center; gap: 6px; padding: 16px 20px; font-size: 14px; color: var(--accent); cursor: pointer; }
 .detail-back svg { width: 18px; height: 18px; }
-.detail-banner {
-  width: 100%; aspect-ratio: 16/8;
-  display: flex; flex-direction: column;
-  align-items: flex-start; justify-content: flex-end;
-  padding: 20px;
-  position: relative; overflow: hidden;
-}
-.detail-banner-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 22px; font-weight: 900;
-  color: white; text-transform: uppercase;
-  line-height: 1.05; letter-spacing: -0.5px;
-  position: relative; z-index: 1;
-}
+.detail-banner { width: 100%; aspect-ratio: 16/8; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; position: relative; overflow: hidden; }
+.detail-banner-title { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 900; text-transform: uppercase; line-height: 1.05; position: relative; z-index: 1; }
 .detail-content { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-.detail-info-row {
-  display: flex; gap: 10px;
-}
-.detail-info-pill {
-  flex: 1;
-  background: var(--card);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 600; color: var(--text);
-  box-shadow: 0 1px 6px rgba(107,63,240,0.06);
-}
+.detail-info-row { display: flex; gap: 10px; }
+.detail-info-pill { flex: 1; background: var(--card); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 1px 6px rgba(107,63,240,0.06); }
 .detail-info-pill svg { width: 18px; height: 18px; color: var(--accent); }
-.detail-speaker {
-  background: var(--card);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 1px 6px rgba(107,63,240,0.06);
-}
-.detail-speaker-ava {
-  width: 40px; height: 40px;
-  background: var(--accent-dim);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-}
+.detail-speaker { background: var(--card); border-radius: var(--radius-sm); padding: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 6px rgba(107,63,240,0.06); }
+.detail-speaker-ava { width: 40px; height: 40px; background: var(--accent-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .detail-speaker-ava svg { width: 22px; height: 22px; color: var(--accent); }
-.detail-speaker-name { font-size: 14px; font-weight: 600; color: var(--text); }
-.detail-speaker-role { font-size: 12px; color: var(--text-sec); margin-top: 1px; }
-.detail-address {
-  font-size: 13px; color: var(--text-sec);
-  padding: 4px 2px;
-  display: flex; align-items: center; gap: 6px;
-}
-.detail-address svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
-.detail-desc {
-  font-size: 14px; line-height: 1.65;
-  color: var(--text);
-}
-.detail-register-wrap { padding: 4px 0 8px; }
+.detail-speaker-name { font-size: 14px; font-weight: 600; }
+.detail-speaker-role { font-size: 12px; color: var(--text-sec); }
+.detail-address { font-size: 13px; color: var(--text-sec); display: flex; align-items: center; gap: 6px; }
+.detail-address svg { width: 14px; height: 14px; color: var(--accent); }
+.detail-desc { font-size: 14px; line-height: 1.65; }
 
-/* ── REGISTRATION FORM ── */
-#screen-register {
-  background: var(--bg);
-}
 .form-header { padding: 20px 20px 0; }
-.form-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 20px; font-weight: 700;
-  line-height: 1.2; margin-bottom: 6px;
-}
+.form-title { font-family: 'Unbounded', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
 .form-subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.5; }
-
 .form-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-
 .form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label {
-  font-size: 12px; font-weight: 600;
-  color: var(--text-sec); letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-.form-input {
-  width: 100%; padding: 14px 16px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: 'Onest', sans-serif;
-  font-size: 15px; color: var(--text);
-  outline: none;
-  transition: border-color .15s;
-}
-.form-input:focus { border-color: var(--accent); }
-.form-input::placeholder { color: var(--text-muted); }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; }
+.form-input, .form-select { width: 100%; padding: 14px 16px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Onest', sans-serif; font-size: 15px; outline: none; }
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%236B7280' stroke-width='2' stroke-linecap='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; cursor: pointer; }
 
-.form-select {
-  width: 100%; padding: 14px 16px;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: 'Onest', sans-serif;
-  font-size: 15px; color: var(--text);
-  outline: none; appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  cursor: pointer;
-  transition: border-color .15s;
-}
-.form-select:focus { border-color: var(--accent); }
-
-/* ── QR TICKET ── */
-#screen-ticket {
-  background: linear-gradient(160deg, #3B0FA0 0%, #6B3FF0 40%, #8B5CF6 100%);
-  min-height: 100vh;
-}
-.ticket-wrap {
-  padding: 30px 24px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 24px;
-}
-.ticket-logo {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 13px; font-weight: 900;
-  color: rgba(255,255,255,0.85);
-  letter-spacing: 1px;
-  text-align: center;
-}
-.ticket-event-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 16px; font-weight: 700;
-  color: white; text-align: center;
-  line-height: 1.3;
-}
-.ticket-card {
-  background: white;
-  border-radius: 24px;
-  padding: 28px;
-  width: 100%;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-.ticket-avatar {
-  width: 64px; height: 64px;
-  background: var(--accent-dim);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-}
-.ticket-avatar svg { width: 36px; height: 36px; color: var(--accent); }
-.ticket-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 14px; font-weight: 700;
-  color: var(--text); text-align: center;
-}
-.ticket-username { font-size: 12px; color: var(--text-sec); margin-top: -10px; }
-.qr-container {
-  width: 180px; height: 180px;
-  padding: 12px;
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-}
-.qr-container canvas { width: 100% !important; height: 100% !important; }
-.ticket-meta { font-size: 12px; color: var(--text-sec); text-align: center; line-height: 1.6; }
-.ticket-share-btn {
-  width: 100%; padding: 14px;
-  background: var(--accent);
-  color: white; border: none;
-  border-radius: var(--radius-sm);
-  font-family: 'Onest', sans-serif;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer; display: flex;
-  align-items: center; justify-content: center; gap: 8px;
-}
-
-/* ── PROFILE SCREEN ── */
-#screen-profile {
-  background: var(--bg);
-}
 .profile-wrap { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-.profile-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 28px 20px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px;
-  box-shadow: 0 2px 16px rgba(107,63,240,0.07);
-}
-.profile-avatar {
-  width: 80px; height: 80px;
-  background: linear-gradient(135deg, var(--accent) 0%, #A855F7 100%);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-}
+.profile-card { background: var(--card); border-radius: var(--radius); padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 2px 16px rgba(107,63,240,0.07); }
+.profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent), #A855F7); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .profile-avatar svg { width: 44px; height: 44px; color: white; }
-.profile-name {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 16px; font-weight: 700;
-  text-align: center;
-}
+.profile-name { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 700; }
 .profile-username { font-size: 13px; color: var(--text-sec); }
-.profile-edit-btn {
-  padding: 10px 28px;
-  background: var(--accent);
-  color: white; border: none;
-  border-radius: 50px;
-  font-family: 'Onest', sans-serif;
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; margin-top: 4px;
-}
+.profile-section-title { font-size: 16px; font-weight: 700; padding: 4px 4px 8px; }
+.profile-event-card { background: var(--card); border-radius: var(--radius-sm); padding: 14px; box-shadow: 0 1px 8px rgba(107,63,240,0.06); display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.profile-event-title { font-size: 14px; font-weight: 600; }
+.profile-event-meta { font-size: 12px; color: var(--text-sec); }
 
-.profile-section-title {
-  font-size: 16px; font-weight: 700;
-  color: var(--text); padding: 4px 4px 8px;
-}
-.profile-section-sub {
-  font-size: 13px; color: var(--text-sec);
-  line-height: 1.5;
-}
-.profile-links { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.profile-link-item {
-  background: var(--card);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  display: flex; align-items: center; gap: 12px;
-  cursor: pointer;
-  box-shadow: 0 1px 6px rgba(107,63,240,0.05);
-  transition: transform .12s;
-}
-.profile-link-item:active { transform: scale(0.98); }
-.profile-link-icon {
-  width: 36px; height: 36px;
-  background: var(--accent-dim);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.profile-link-icon svg { width: 18px; height: 18px; color: var(--accent); }
-.profile-link-text { flex: 1; }
-.profile-link-title { font-size: 14px; font-weight: 600; color: var(--text); }
-.profile-link-sub { font-size: 12px; color: var(--text-sec); margin-top: 1px; }
-.profile-link-arrow { color: var(--text-muted); }
-.profile-link-arrow svg { width: 16px; height: 16px; }
-
-/* ── ADMIN SCREEN ── */
-#screen-admin {
-  background: var(--bg);
-}
-.admin-wrap { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-.admin-header-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 20px; font-weight: 700;
-}
-.admin-header-sub { font-size: 13px; color: var(--text-sec); margin-top: 4px; }
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.stat-card {
-  background: var(--card);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  box-shadow: 0 1px 8px rgba(107,63,240,0.06);
-}
-.stat-num {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 28px; font-weight: 700;
-  color: var(--accent);
-}
-.stat-label { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
-.admin-actions { display: flex; flex-direction: column; gap: 10px; }
-.admin-action {
-  background: var(--card);
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  display: flex; align-items: center; gap: 12px;
-  cursor: pointer;
-  box-shadow: 0 1px 8px rgba(107,63,240,0.06);
-  transition: transform .12s;
-  border: none; width: 100%;
-  font-family: 'Onest', sans-serif;
-  text-align: left;
-}
-.admin-action:active { transform: scale(0.98); }
-.admin-action-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.admin-action-icon.purple { background: var(--accent); }
-.admin-action-icon.green { background: #10B981; }
-.admin-action-icon.amber { background: #F59E0B; }
-.admin-action-icon.blue { background: #3B82F6; }
-.admin-action-icon svg { width: 22px; height: 22px; color: white; }
-.admin-action-title { font-size: 14px; font-weight: 600; color: var(--text); }
-.admin-action-sub { font-size: 12px; color: var(--text-sec); margin-top: 1px; }
-.admin-action-arrow { margin-left: auto; color: var(--text-muted); }
-.admin-action-arrow svg { width: 16px; height: 16px; }
-
-/* ── SUCCESS OVERLAY ── */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(26,16,51,0.6);
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px;
-  z-index: 200;
-  opacity: 0; pointer-events: none;
-  transition: opacity .2s;
-  backdrop-filter: blur(4px);
-}
+.overlay { position: fixed; inset: 0; background: rgba(26,16,51,0.6); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity .2s; backdrop-filter: blur(4px); }
 .overlay.show { opacity: 1; pointer-events: all; }
-.overlay-card {
-  background: var(--card);
-  border-radius: 24px;
-  padding: 32px 24px;
-  text-align: center;
-  width: 100%;
-  transform: scale(0.92);
-  transition: transform .2s;
-}
+.overlay-card { background: var(--card); border-radius: 24px; padding: 32px 24px; text-align: center; width: 100%; transform: scale(0.92); transition: transform .2s; }
 .overlay.show .overlay-card { transform: scale(1); }
-.overlay-icon {
-  width: 72px; height: 72px;
-  background: rgba(16,185,129,0.1);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 16px;
-}
+.overlay-icon { width: 72px; height: 72px; background: rgba(16,185,129,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.overlay-icon.error { background: rgba(239,68,68,0.1); }
 .overlay-icon svg { width: 38px; height: 38px; color: var(--success); }
-.overlay-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 18px; font-weight: 700;
-  margin-bottom: 8px;
-}
+.overlay-icon.error svg { color: var(--danger); }
+.overlay-title { font-family: 'Unbounded', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
 .overlay-sub { font-size: 14px; color: var(--text-sec); line-height: 1.5; margin-bottom: 24px; }
-.overlay-btn {
-  width: 100%; padding: 15px;
-  background: var(--accent);
-  color: white; border: none;
-  border-radius: var(--radius-sm);
-  font-family: 'Onest', sans-serif;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer;
-}
+.overlay-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Onest', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
 
-/* Spinner */
-.spinner {
-  width: 20px; height: 20px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* empty state */
-.empty-state {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 48px 24px;
-  gap: 12px;
-}
-.empty-icon {
-  width: 72px; height: 72px;
-  background: var(--accent-dim);
-  border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
-}
+.empty-state { display: flex; flex-direction: column; align-items: center; padding: 48px 24px; gap: 12px; }
+.empty-icon { width: 72px; height: 72px; background: var(--accent-dim); border-radius: 20px; display: flex; align-items: center; justify-content: center; }
 .empty-icon svg { width: 36px; height: 36px; color: var(--accent); }
 .empty-title { font-size: 16px; font-weight: 700; text-align: center; }
 .empty-sub { font-size: 13px; color: var(--text-sec); text-align: center; line-height: 1.5; }
-.empty-pill {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--accent-dim);
-  padding: 8px 16px;
-  border-radius: 50px;
-  font-size: 12px; color: var(--accent); font-weight: 500;
-}
 
-/* Scrollbar */
+.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; }
+.loading-spinner { width: 36px; height: 36px; border: 3px solid var(--accent-dim); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+.loading-text { font-size: 13px; color: var(--text-sec); }
+
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════
-     SCREEN: EVENTS LIST
-═══════════════════════════════════════ -->
 <div id="screen-events" class="screen active">
   <div class="events-header">
     <div class="events-logo">HSE <span>CASE</span> CLUB</div>
     <div class="search-bar">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" placeholder="Поиск мероприятий..." id="searchInput" oninput="filterEvents()">
     </div>
   </div>
-
   <div class="tabs">
     <button class="tab active" onclick="switchTab(this,'upcoming')">Ближайшие</button>
     <button class="tab" onclick="switchTab(this,'past')">Прошедшие</button>
   </div>
-
-  <div class="events-list" id="eventsList"></div>
+  <div class="events-list" id="eventsList">
+    <div class="loading-screen">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Загружаем мероприятия...</div>
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN: EVENT DETAIL
-═══════════════════════════════════════ -->
 <div id="screen-detail" class="screen">
   <div class="detail-back" onclick="showScreen('events')">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-    </svg>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
     Назад
   </div>
-
   <div class="detail-banner" id="detailBanner">
     <div id="detailBannerBg" style="position:absolute;inset:0;"></div>
     <div class="detail-banner-title" id="detailBannerTitle"></div>
   </div>
-
   <div class="detail-content">
     <div class="detail-info-row">
       <div class="detail-info-pill">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <span id="detailDate"></span>
       </div>
       <div class="detail-info-pill">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span id="detailTime"></span>
       </div>
     </div>
-
     <div class="detail-speaker" id="detailSpeakerBlock">
       <div class="detail-speaker-ava">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
       <div>
         <div class="detail-speaker-name" id="detailSpeaker"></div>
         <div class="detail-speaker-role" id="detailSpeakerRole"></div>
       </div>
     </div>
-
     <div class="detail-address" id="detailAddressBlock">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-        <circle cx="12" cy="9" r="2.5"/>
-      </svg>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
       <span id="detailAddress"></span>
     </div>
-
     <div class="detail-desc" id="detailDesc"></div>
-
-    <div class="detail-register-wrap" id="detailRegisterWrap"></div>
+    <div id="detailRegisterWrap" style="padding:4px 0 8px;"></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN: REGISTRATION FORM
-═══════════════════════════════════════ -->
 <div id="screen-register" class="screen">
   <div class="detail-back" onclick="showScreen('detail')">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-    </svg>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
     Назад
   </div>
-
   <div class="form-header">
-    <div class="form-title" id="formEventTitle">Регистрация</div>
-    <div class="form-subtitle" style="margin-top:8px;" id="formEventSub">Заполните данные — билет придёт в бот</div>
+    <div class="form-title">Регистрация на мероприятие</div>
+    <div class="form-subtitle" style="margin-top:8px;" id="formEventSub"></div>
   </div>
-
   <div class="form-body">
     <div class="form-group">
       <label class="form-label">Имя и фамилия</label>
@@ -805,7 +229,7 @@ html, body {
     </div>
     <div class="form-group">
       <label class="form-label">Университет</label>
-      <select class="form-select" id="fieldUniversity" onchange="toggleCourse()">
+      <select class="form-select" id="fieldUniversity">
         <option value="">Выберите вуз...</option>
         <option value="ВШЭ">НИУ ВШЭ</option>
         <option value="МГУ">МГУ им. Ломоносова</option>
@@ -815,7 +239,7 @@ html, body {
         <option value="Другой">Другой вуз...</option>
       </select>
     </div>
-    <div class="form-group" id="courseGroup">
+    <div class="form-group">
       <label class="form-label">Курс</label>
       <select class="form-select" id="fieldCourse">
         <option value="">Выберите курс...</option>
@@ -823,399 +247,178 @@ html, body {
         <option value="2">2 курс (бакалавриат)</option>
         <option value="3">3 курс (бакалавриат)</option>
         <option value="4">4 курс (бакалавриат)</option>
-        <option value="mag1">1 курс (магистратура)</option>
-        <option value="mag2">2 курс (магистратура)</option>
+        <option value="маг1">1 курс (магистратура)</option>
+        <option value="маг2">2 курс (магистратура)</option>
       </select>
     </div>
     <div class="form-group">
       <label class="form-label">Email</label>
       <input class="form-input" id="fieldEmail" placeholder="ivan@student.hse.ru" type="email">
     </div>
-
     <button class="btn btn-primary" id="submitBtn" onclick="submitRegistration()" style="margin-top:8px;">
       Зарегистрироваться
     </button>
-
-    <div style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.6;padding:4px 0;">
-      После регистрации вы получите QR-билет в боте.<br>
+    <div style="font-size:12px;color:var(--text-muted);text-align:center;line-height:1.6;">
+      После регистрации QR-билет придёт в бота.<br>
       Без QR-кода на входе не пустим 🙏
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN: QR TICKET
-═══════════════════════════════════════ -->
-<div id="screen-ticket" class="screen">
-  <div class="ticket-wrap">
-    <div class="ticket-logo">HSE × CASE CLUB</div>
-    <div class="ticket-event-name" id="ticketEventName">Кейс-чемпионат</div>
-    <div class="ticket-card">
-      <div class="ticket-avatar">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-      </div>
-      <div class="ticket-name" id="ticketName">Иван Иванов</div>
-      <div class="ticket-username" id="ticketUsername">@username</div>
-      <div class="qr-container">
-        <canvas id="qrCanvas"></canvas>
-      </div>
-      <div class="ticket-meta" id="ticketMeta">ВШЭ · 2 курс</div>
-    </div>
-    <button class="ticket-share-btn" onclick="shareTicket()">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-      </svg>
-      Поделиться
-    </button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     SCREEN: PROFILE
-═══════════════════════════════════════ -->
 <div id="screen-profile" class="screen">
   <div class="profile-wrap">
     <div class="profile-card">
       <div class="profile-avatar">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
-      <div class="profile-name" id="profileName">Иван Иванов</div>
-      <div class="profile-username" id="profileUsername">@ivan_ivanov</div>
-      <button class="profile-edit-btn">Изменить</button>
+      <div class="profile-name" id="profileName">—</div>
+      <div class="profile-username" id="profileUsername">—</div>
     </div>
-
     <div>
-      <div class="profile-section-title">Ваши ближайшие мероприятия</div>
+      <div class="profile-section-title">Ваши мероприятия</div>
       <div id="profileEvents">
-        <div class="profile-section-sub">Вы ещё не зарегистрированы ни на одно мероприятие. Зарегистрируйтесь на интересное событие!</div>
-      </div>
-    </div>
-
-    <div class="profile-links">
-      <div class="profile-link-item" onclick="">
-        <div class="profile-link-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-          </svg>
-        </div>
-        <div class="profile-link-text">
-          <div class="profile-link-title">Чат участников</div>
-          <div class="profile-link-sub">Общение с кейсерами</div>
-        </div>
-        <div class="profile-link-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </div>
-      <div class="profile-link-item">
-        <div class="profile-link-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
-          </svg>
-        </div>
-        <div class="profile-link-text">
-          <div class="profile-link-title">Пригласить друзей</div>
-          <div class="profile-link-sub">Поделиться ботом</div>
-        </div>
-        <div class="profile-link-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </div>
-      <div class="profile-link-item">
-        <div class="profile-link-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/>
-          </svg>
-        </div>
-        <div class="profile-link-text">
-          <div class="profile-link-title">Поддержка</div>
-          <div class="profile-link-sub">Написать организаторам</div>
-        </div>
-        <div class="profile-link-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
+        <div style="font-size:13px;color:var(--text-sec);">Загружаем...</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     SCREEN: ADMIN
-═══════════════════════════════════════ -->
-<div id="screen-admin" class="screen">
-  <div class="admin-wrap">
-    <div>
-      <div class="admin-header-title">Панель организатора</div>
-      <div class="admin-header-sub">Управление мероприятиями кейс-клуба</div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num">247</div>
-        <div class="stat-label">Всего участников</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">3</div>
-        <div class="stat-label">Активных событий</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">18</div>
-        <div class="stat-label">Внешних гостей</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">89%</div>
-        <div class="stat-label">Конверсия явки</div>
-      </div>
-    </div>
-
-    <div class="admin-actions">
-      <button class="admin-action" onclick="alert('Создание мероприятия — в боте через /admin')">
-        <div class="admin-action-icon purple">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-        </div>
-        <div>
-          <div class="admin-action-title">Создать мероприятие</div>
-          <div class="admin-action-sub">Добавить новое событие</div>
-        </div>
-        <div class="admin-action-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </button>
-
-      <button class="admin-action" onclick="alert('Excel выгрузка запущена!')">
-        <div class="admin-action-icon green">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="admin-action-title">Выгрузить Excel</div>
-          <div class="admin-action-sub">Список внешних гостей для пропусков</div>
-        </div>
-        <div class="admin-action-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </button>
-
-      <button class="admin-action" onclick="alert('Рассылка — выберите мероприятие в боте')">
-        <div class="admin-action-icon amber">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-          </svg>
-        </div>
-        <div>
-          <div class="admin-action-title">Сделать рассылку</div>
-          <div class="admin-action-sub">Уведомить всех участников</div>
-        </div>
-        <div class="admin-action-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </button>
-
-      <button class="admin-action">
-        <div class="admin-action-icon blue">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-          </svg>
-        </div>
-        <div>
-          <div class="admin-action-title">Статистика</div>
-          <div class="admin-action-sub">Конверсия, явка, динамика</div>
-        </div>
-        <div class="admin-action-arrow"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18l6-6-6-6"/></svg></div>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     BOTTOM NAV
-═══════════════════════════════════════ -->
 <nav class="bottom-nav">
   <div class="nav-item active" id="nav-events" onclick="showScreen('events'); setNav(this)">
-    <div class="nav-icon">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-      </svg>
-    </div>
+    <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
     <span class="nav-label">Мероприятия</span>
   </div>
-
-  <div class="nav-item" id="nav-ticket" onclick="showScreen('ticket'); setNav(this)">
-    <div class="nav-icon">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-      </svg>
-    </div>
-    <span class="nav-label">Билет</span>
-  </div>
-
-  <div class="nav-center" id="nav-admin" onclick="showScreen('admin'); setNav(this)">
-    <div class="nav-center-btn">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
-    </div>
-    <span class="nav-label" style="color:var(--text-muted)">Управление</span>
-  </div>
-
-  <div class="nav-item" id="nav-members" onclick="">
-    <div class="nav-icon">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-      </svg>
-    </div>
-    <span class="nav-label">Участники</span>
-  </div>
-
-  <div class="nav-item" id="nav-profile" onclick="showScreen('profile'); setNav(this)">
-    <div class="nav-icon">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
-      </svg>
-    </div>
+  <div class="nav-item" id="nav-profile" onclick="showScreen('profile'); setNav(this); loadProfile()">
+    <div class="nav-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     <span class="nav-label">Профиль</span>
   </div>
 </nav>
 
-<!-- Success overlay -->
 <div class="overlay" id="successOverlay">
   <div class="overlay-card">
-    <div class="overlay-icon">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-      </svg>
-    </div>
+    <div class="overlay-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg></div>
     <div class="overlay-title">Вы зарегистрированы!</div>
-    <div class="overlay-sub">QR-билет готов. Покажите его на входе — без кода не пустим 😄</div>
-    <button class="overlay-btn" onclick="goToTicket()">Открыть билет</button>
+    <div class="overlay-sub">QR-билет отправлен в бота 🎫<br>Покажите его на входе</div>
+    <button class="overlay-btn" onclick="closeOverlay()">Готово</button>
   </div>
 </div>
 
-<!-- QR lib -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<div class="overlay" id="errorOverlay">
+  <div class="overlay-card">
+    <div class="overlay-icon error"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></div>
+    <div class="overlay-title">Ошибка</div>
+    <div class="overlay-sub" id="errorMsg">Что-то пошло не так</div>
+    <button class="overlay-btn" onclick="closeOverlay()">Понятно</button>
+  </div>
+</div>
 
 <script>
-// ── DATA ──────────────────────────────────
-const EVENTS = [
-  {
-    id: 1,
-    title: 'Кейс-чемпионат: Стратегия выхода на новые рынки',
-    shortTitle: 'КЕЙС-\nЧЕМПИОНАТ',
-    type: 'Кейс-чемпионат',
-    date: '24.05.2026',
-    time: '14:00',
-    speaker: 'Александр Воронин',
-    speakerRole: 'Partner, McKinsey & Company',
-    address: 'Корпус А, ауд. 301, Покровский б-р 11',
-    desc: 'Откройте для себя профессиональный кейс-разбор: как компании выходят на новые рынки в условиях санкционного давления. Работаем в командах по 4-5 человек, решаем реальный кейс от партнёра.',
-    color1: '#3B0FA0', color2: '#6B3FF0', accent: '#C4F135',
-    status: 'upcoming', seats: 60, registered: 38
-  },
-  {
-    id: 2,
-    title: 'Воркшоп: Финансовое моделирование для стартапа',
-    shortTitle: 'ФИНМОДЕЛЬ\nSTARTUP',
-    type: 'Воркшоп',
-    date: '10.06.2026',
-    time: '18:30',
-    speaker: 'Мария Соколова',
-    speakerRole: 'CFO, Яндекс Маркет',
-    address: 'Старая Басманная ул., д.21/4',
-    desc: 'Практический воркшоп по построению финансовых моделей для стартапов на ранних стадиях. Разберём unit-экономику, CAC/LTV, projection scenarios.',
-    color1: '#065F46', color2: '#059669', accent: '#FDE68A',
-    status: 'upcoming', seats: 30, registered: 24
-  },
-  {
-    id: 3,
-    title: 'Митап: Карьера в консалтинге — честный разговор',
-    shortTitle: 'КАРЬЕРА\nВ КОНСАЛТИНГЕ',
-    type: 'Митап',
-    date: '15.04.2026',
-    time: '19:00',
-    speaker: 'Павел Ивлев',
-    speakerRole: 'Ex-BCG, основатель Prime',
-    address: 'Кантемировская ул., д.3к1',
-    desc: 'Честный разговор про карьеру в топ-консалтинге: как попасть, что там на самом деле, почему уходят. Вопросы из зала приветствуются.',
-    color1: '#7C2D12', color2: '#DC2626', accent: '#FCD34D',
-    status: 'past', seats: 80, registered: 80
-  },
-];
+// ⚠️ ВАЖНО: укажи URL твоего API
+const API_URL = 'http://localhost:8000';
 
-let currentEventId = null;
-let registeredEvents = new Set();
+let allEvents = [];
+let currentEvent = null;
 let currentTab = 'upcoming';
-let tgUser = { first_name: 'Иван', last_name: 'Иванов', username: 'ivan_ivanov' };
+let myRegistrations = new Set();
+let tgUser = null;
+let initData = '';
 
-// ── TG INIT ───────────────────────────────
 if (window.Telegram && window.Telegram.WebApp) {
   const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-  if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    tgUser = tg.initDataUnsafe.user;
+  tg.ready(); tg.expand();
+  initData = tg.initData || '';
+  if (tg.initDataUnsafe?.user) tgUser = tg.initDataUnsafe.user;
+}
+if (!tgUser) tgUser = { id: 12345, first_name: 'Test', last_name: 'User', username: 'test' };
+
+async function apiCall(endpoint, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (initData) headers['X-Init-Data'] = initData;
+  else headers['X-Dev-Mode'] = '1';
+  const res = await fetch(`${API_URL}${endpoint}`, { ...opts, headers });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Network error' }));
+    throw new Error(err.detail || 'Request failed');
+  }
+  return res.json();
+}
+
+async function loadEvents() {
+  try {
+    const data = await apiCall('/api/events');
+    allEvents = data.events;
+    try {
+      const myData = await apiCall('/api/my/registrations');
+      myRegistrations = new Set(myData.registrations.map(r => r.event_id));
+    } catch (e) { myRegistrations = new Set(); }
+    renderEvents();
+  } catch (e) {
+    document.getElementById('eventsList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <div class="empty-title">Не удалось загрузить</div>
+        <div class="empty-sub">${e.message}<br><br>Проверьте что API сервер запущен и URL правильный.</div>
+      </div>`;
   }
 }
 
-// Profile fill
-document.getElementById('profileName').textContent =
-  (tgUser.first_name || '') + ' ' + (tgUser.last_name || '');
-document.getElementById('profileUsername').textContent =
-  tgUser.username ? '@' + tgUser.username : '';
+const BANNER_COLORS = [
+  { c1: '#3B0FA0', c2: '#6B3FF0', accent: '#C4F135' },
+  { c1: '#065F46', c2: '#059669', accent: '#FDE68A' },
+  { c1: '#7C2D12', c2: '#DC2626', accent: '#FCD34D' },
+  { c1: '#1E3A8A', c2: '#3B82F6', accent: '#A5F3FC' },
+  { c1: '#831843', c2: '#DB2777', accent: '#FDE68A' },
+];
+function getColors(id) { return BANNER_COLORS[id % BANNER_COLORS.length]; }
+function shortTitle(t) {
+  const words = t.split(/[\s:,]+/).filter(Boolean).slice(0, 4);
+  if (words.length <= 1) return t.toUpperCase();
+  const m = Math.ceil(words.length / 2);
+  return words.slice(0, m).join(' ').toUpperCase() + '\n' + words.slice(m).join(' ').toUpperCase();
+}
 
-// ── NAVIGATION ────────────────────────────
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
 }
-
 function setNav(el) {
-  document.querySelectorAll('.nav-item, .nav-center').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
 }
 
-// ── EVENTS LIST ───────────────────────────
 function renderEvents() {
   const list = document.getElementById('eventsList');
-  const filtered = EVENTS.filter(e =>
-    e.status === currentTab ||
-    (currentTab === 'upcoming' && e.status === 'upcoming') ||
-    (currentTab === 'past' && e.status === 'past')
-  );
-
+  const filtered = allEvents.filter(e => e.status === currentTab);
   if (!filtered.length) {
     list.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="36" height="36">
-            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/></svg>
         </div>
-        <div class="empty-title">Пока нет мероприятий</div>
-        <div class="empty-sub">Следите за анонсами — новые события скоро появятся</div>
-        <div class="empty-pill">
-          <svg fill="currentColor" viewBox="0 0 8 8" width="6" height="6"><circle cx="4" cy="4" r="4"/></svg>
-          Скоро здесь появятся новые даты
-        </div>
+        <div class="empty-title">${currentTab === 'upcoming' ? 'Пока нет предстоящих мероприятий' : 'Прошедших мероприятий нет'}</div>
+        <div class="empty-sub">Следите за анонсами в боте</div>
       </div>`;
     return;
   }
-
   list.innerHTML = filtered.map(ev => {
-    const isReg = registeredEvents.has(ev.id);
+    const isReg = myRegistrations.has(ev.id);
     const isPast = ev.status === 'past';
-    const pct = Math.round((ev.registered / ev.seats) * 100);
+    const colors = getColors(ev.id);
+    const pct = ev.seats > 0 ? Math.round((ev.registered / ev.seats) * 100) : 0;
     return `
     <div class="event-card" onclick="openEvent(${ev.id})">
-      <div class="event-banner-placeholder" style="background:linear-gradient(135deg,${ev.color1} 0%,${ev.color2} 100%)">
+      <div class="event-banner-placeholder" style="background:linear-gradient(135deg,${colors.c1} 0%,${colors.c2} 100%)">
         <div class="event-banner-bg">
-          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" opacity="0.08">
-            <circle cx="60" cy="60" r="50" stroke="white" stroke-width="20"/>
-            <circle cx="60" cy="60" r="25" stroke="white" stroke-width="12"/>
+          <svg width="120" height="120" viewBox="0 0 120 120" opacity="0.08">
+            <circle cx="60" cy="60" r="50" stroke="white" stroke-width="20" fill="none"/>
+            <circle cx="60" cy="60" r="25" stroke="white" stroke-width="12" fill="none"/>
           </svg>
         </div>
         <div class="event-banner-text">
-          <div class="event-banner-title" style="color:${ev.accent};white-space:pre-line">${ev.shortTitle}</div>
-          <div class="event-banner-sub" style="color:rgba(255,255,255,0.65)">HSE × CASE CLUB</div>
+          <div class="event-banner-title" style="color:${colors.accent};white-space:pre-line">${shortTitle(ev.title)}</div>
+          <div class="event-banner-sub">HSE × CASE CLUB</div>
         </div>
       </div>
       <div class="event-body">
@@ -1227,30 +430,22 @@ function renderEvents() {
         <div class="event-title">${ev.title}</div>
         <div class="event-meta">
           <div class="event-meta-pill">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            ${ev.date}
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${ev.date_display || ev.date}
           </div>
           <div class="event-meta-pill">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             ${ev.time}
           </div>
         </div>
-        <div class="event-desc">${ev.desc.substring(0, 100)}...</div>
+        <div class="event-desc">${(ev.description || '').substring(0, 100)}${ev.description && ev.description.length > 100 ? '...' : ''}</div>
         <span class="event-more">Подробнее →</span>
       </div>
       <div class="event-footer">
         <span class="event-count">${ev.registered}/${ev.seats} мест занято</span>
-        ${isPast
-          ? `<button class="event-register-btn registered" onclick="event.stopPropagation()">✓ Завершено</button>`
-          : isReg
-          ? `<button class="event-register-btn registered" onclick="event.stopPropagation();openTicket(${ev.id})">Мой билет →</button>`
-          : `<button class="event-register-btn" onclick="event.stopPropagation();openEvent(${ev.id})">Записаться</button>`
-        }
+        ${isPast ? '<button class="event-register-btn registered">✓ Завершено</button>'
+          : isReg ? '<button class="event-register-btn registered">✓ Записаны</button>'
+          : '<button class="event-register-btn" onclick="event.stopPropagation();openEvent(' + ev.id + ')">Записаться</button>'}
       </div>
     </div>`;
   }).join('');
@@ -1270,144 +465,113 @@ function filterEvents() {
   });
 }
 
-// ── EVENT DETAIL ──────────────────────────
-function openEvent(id) {
-  const ev = EVENTS.find(e => e.id === id);
-  if (!ev) return;
-  currentEventId = id;
+async function openEvent(id) {
+  try {
+    const ev = await apiCall(`/api/events/${id}`);
+    currentEvent = ev;
+    const colors = getColors(ev.id);
+    document.getElementById('detailBannerBg').style.cssText =
+      `position:absolute;inset:0;background:linear-gradient(135deg,${colors.c1} 0%,${colors.c2} 100%)`;
+    document.getElementById('detailBannerTitle').textContent = shortTitle(ev.title).replace('\n', ' ');
+    document.getElementById('detailBannerTitle').style.color = colors.accent;
+    document.getElementById('detailDate').textContent = ev.date_display || ev.date;
+    document.getElementById('detailTime').textContent = ev.time;
 
-  document.getElementById('detailBannerBg').style.cssText =
-    `position:absolute;inset:0;background:linear-gradient(135deg,${ev.color1} 0%,${ev.color2} 100%)`;
-  document.getElementById('detailBannerTitle').textContent = ev.shortTitle.replace('\n', ' ');
-  document.getElementById('detailBannerTitle').style.color = ev.accent;
-  document.getElementById('detailDate').textContent = ev.date;
-  document.getElementById('detailTime').textContent = ev.time;
-  document.getElementById('detailSpeaker').textContent = ev.speaker;
-  document.getElementById('detailSpeakerRole').textContent = ev.speakerRole;
-  document.getElementById('detailAddress').textContent = ev.address;
-  document.getElementById('detailDesc').textContent = ev.desc;
+    if (ev.speaker) {
+      document.getElementById('detailSpeakerBlock').style.display = 'flex';
+      document.getElementById('detailSpeaker').textContent = ev.speaker;
+      document.getElementById('detailSpeakerRole').textContent = ev.speaker_role || '';
+    } else {
+      document.getElementById('detailSpeakerBlock').style.display = 'none';
+    }
+    if (ev.address) {
+      document.getElementById('detailAddressBlock').style.display = 'flex';
+      document.getElementById('detailAddress').textContent = ev.address;
+    } else {
+      document.getElementById('detailAddressBlock').style.display = 'none';
+    }
+    document.getElementById('detailDesc').textContent = ev.description || '';
 
-  const wrap = document.getElementById('detailRegisterWrap');
-  const isReg = registeredEvents.has(id);
-  const isPast = ev.status === 'past';
-  if (isPast) {
-    wrap.innerHTML = `<button class="btn btn-ghost">Мероприятие завершено</button>`;
-  } else if (isReg) {
-    wrap.innerHTML = `
-      <button class="btn btn-ghost" onclick="openTicket(${id})">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <path stroke-linecap="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-        </svg>
-        Открыть билет
-      </button>`;
-  } else {
-    wrap.innerHTML = `
-      <button class="btn btn-primary" onclick="openRegistration(${id})">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-        </svg>
-        Зарегистрироваться
-      </button>`;
-  }
-
-  showScreen('detail');
+    const wrap = document.getElementById('detailRegisterWrap');
+    const isReg = myRegistrations.has(id);
+    const isPast = ev.status === 'past';
+    if (isPast) wrap.innerHTML = `<button class="btn btn-ghost">Мероприятие завершено</button>`;
+    else if (isReg) wrap.innerHTML = `<button class="btn btn-ghost">✓ Вы зарегистрированы</button>`;
+    else if (ev.registered >= ev.seats) wrap.innerHTML = `<button class="btn btn-ghost">😔 Мест нет</button>`;
+    else wrap.innerHTML = `<button class="btn btn-primary" onclick="openRegistration()">Зарегистрироваться</button>`;
+    showScreen('detail');
+  } catch (e) { showError(e.message); }
 }
 
-// ── REGISTRATION ──────────────────────────
-function openRegistration(id) {
-  const ev = EVENTS.find(e => e.id === id);
-  document.getElementById('formEventTitle').textContent = 'Регистрация на мероприятие';
-  document.getElementById('formEventSub').textContent = ev ? ev.title : '';
-  // Pre-fill name from TG
-  document.getElementById('fieldName').value =
-    ((tgUser.first_name || '') + ' ' + (tgUser.last_name || '')).trim();
+function openRegistration() {
+  document.getElementById('formEventSub').textContent = currentEvent ? currentEvent.title : '';
+  document.getElementById('fieldName').value = ((tgUser.first_name || '') + ' ' + (tgUser.last_name || '')).trim();
   showScreen('register');
 }
 
-function toggleCourse() {
-  document.getElementById('courseGroup').style.display = 'flex';
-}
-
-function submitRegistration() {
+async function submitRegistration() {
   const name = document.getElementById('fieldName').value.trim();
   const uni = document.getElementById('fieldUniversity').value;
+  const course = document.getElementById('fieldCourse').value;
   const email = document.getElementById('fieldEmail').value.trim();
-
-  if (!name || !uni || !email) {
-    alert('Пожалуйста, заполните все поля');
-    return;
-  }
-  if (!email.includes('@')) {
-    alert('Введите корректный email');
-    return;
-  }
+  if (!name || !uni || !email) { showError('Заполните все поля'); return; }
+  if (!email.includes('@')) { showError('Введите корректный email'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.innerHTML = '<div class="spinner"></div>';
   btn.disabled = true;
-
-  setTimeout(() => {
-    registeredEvents.add(currentEventId);
+  try {
+    await apiCall('/api/register', {
+      method: 'POST',
+      body: JSON.stringify({ event_id: currentEvent.id, full_name: name, university: uni, course, email })
+    });
+    myRegistrations.add(currentEvent.id);
+    document.getElementById('successOverlay').classList.add('show');
+    await loadEvents();
+  } catch (e) {
+    showError(e.message);
+  } finally {
     btn.innerHTML = 'Зарегистрироваться';
     btn.disabled = false;
-    renderEvents();
-    document.getElementById('successOverlay').classList.add('show');
-  }, 1200);
-}
-
-function goToTicket() {
-  document.getElementById('successOverlay').classList.remove('show');
-  openTicket(currentEventId);
-}
-
-// ── TICKET ────────────────────────────────
-function openTicket(id) {
-  const ev = EVENTS.find(e => e.id === id);
-  const name = document.getElementById('fieldName').value ||
-    (tgUser.first_name + ' ' + (tgUser.last_name || '')).trim();
-
-  document.getElementById('ticketEventName').textContent = ev ? ev.title : 'Мероприятие';
-  document.getElementById('ticketName').textContent = name;
-  document.getElementById('ticketUsername').textContent =
-    tgUser.username ? '@' + tgUser.username : '';
-  const uni = document.getElementById('fieldUniversity').value || 'ВШЭ';
-  const course = document.getElementById('fieldCourse').options[
-    document.getElementById('fieldCourse').selectedIndex]?.text || '';
-  document.getElementById('ticketMeta').textContent = uni + (course ? ' · ' + course : '');
-
-  // Generate QR
-  const qrData = JSON.stringify({
-    event: id,
-    user: tgUser.id || 12345,
-    name: name,
-    ts: Date.now()
-  });
-
-  const canvas = document.getElementById('qrCanvas');
-  canvas.innerHTML = '';
-  try {
-    new QRCode(canvas, {
-      text: qrData,
-      width: 156, height: 156,
-      colorDark: '#1A1033', colorLight: '#FFFFFF',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  } catch(e) {}
-
-  showScreen('ticket');
-  setNav(document.getElementById('nav-ticket'));
-}
-
-function shareTicket() {
-  if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.showAlert('Ссылка скопирована! Перешлите другу 🎫');
-  } else {
-    alert('Поделиться билетом');
   }
 }
 
-// ── INIT ──────────────────────────────────
-renderEvents();
+function showError(msg) {
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorOverlay').classList.add('show');
+}
+function closeOverlay() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('show'));
+  showScreen('events');
+  setNav(document.getElementById('nav-events'));
+}
+
+async function loadProfile() {
+  try {
+    const data = await apiCall('/api/me');
+    const u = data.user || {};
+    document.getElementById('profileName').textContent =
+      u.full_name || ((tgUser.first_name || '') + ' ' + (tgUser.last_name || '')).trim() || 'Пользователь';
+    document.getElementById('profileUsername').textContent =
+      u.username ? '@' + u.username : (tgUser.username ? '@' + tgUser.username : '');
+    const evList = document.getElementById('profileEvents');
+    if (!data.registrations.length) {
+      evList.innerHTML = '<div style="font-size:13px;color:var(--text-sec);">Вы ещё не зарегистрированы ни на одно мероприятие.</div>';
+    } else {
+      evList.innerHTML = data.registrations.map(r => `
+        <div class="profile-event-card">
+          <div class="profile-event-title">${r.title}</div>
+          <div class="profile-event-meta">📅 ${r.date} в ${r.time}</div>
+          <div class="profile-event-meta">📍 ${r.address || '—'}</div>
+        </div>`).join('');
+    }
+  } catch (e) {
+    document.getElementById('profileEvents').innerHTML =
+      `<div style="color:var(--danger);font-size:13px;">Ошибка: ${e.message}</div>`;
+  }
+}
+
+loadEvents();
 </script>
 </body>
 </html>
